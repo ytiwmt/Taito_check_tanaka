@@ -211,6 +211,8 @@ def open_calendar(page):
         "input[value*='たなか']"
     )
 
+    info(page.inner_text("body")[:2000])
+
     click(
         page,
         "input[name='ucPCFooter$btnForward']"
