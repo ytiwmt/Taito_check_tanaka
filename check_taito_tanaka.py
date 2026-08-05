@@ -6,16 +6,53 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 from playwright.sync_api import sync_playwright
 import jpholiday
+import redis
 
 WEBHOOK_URL = os.getenv("WEBHOOK_URL_Taito_tanaka")
 
 BASE_URL = "https://shisetsu.city.taito.lg.jp/Wg_ModeSelect.aspx"
 
-VERSION = "v2.0"
+VERSION = "v3.0"
 
 WEEKS = ["月", "火", "水", "木", "金", "土", "日"]
 
 DEBUG = False
+
+REDIS_URL = os.getenv("REDIS_URL")
+r = None
+if REDIS_URL:
+
+    try:
+
+        connection_url = (
+            REDIS_URL.replace(
+                "redis://",
+                "rediss://",
+                1
+            )
+            if REDIS_URL.startswith("redis://")
+            else REDIS_URL
+        )
+
+        r = redis.from_url(
+            connection_url,
+            decode_responses=True,
+            ssl_cert_reqs=None
+        )
+
+        r.ping()
+
+        print(
+            "✅ Redis connection successful (Taito Tanaka)"
+        )
+
+    except Exception as e:
+
+        print(
+            f"❌ Redis connection error: {e}"
+        )
+
+        r = None
 
 
 # =========================================
@@ -524,7 +561,57 @@ def run_check():
                 else now.year
             )
 
+            current_state = []
+            for item in current:
+
+                current_state.append(
+                    f"{current_month}_"
+                    f"{item['day']}_"
+                    f"{item['status']}"
+                )
+            if next_month_mode:
+
+                for item in next_data:
+
+                    current_state.append(
+                        f"{next_month}_"
+                        f"{item['day']}_"
+                        f"{item['status']}"
+                    )
+            current_state = sorted(
+                list(set(current_state))
+            )
             is_changed = True
+            if r:
+
+                try:
+
+                    last_raw = r.get(
+                        "taito_tanaka_status"
+                    )
+
+                    if last_raw:
+
+                        last_state = json.loads(
+                            last_raw
+                        )
+
+                        if (
+                            set(current_state)
+                            == set(last_state)
+                        ):
+                            is_changed = False
+
+                    r.set(
+                        "taito_tanaka_status",
+                        json.dumps(current_state)
+                    )
+
+                except Exception as e:
+
+                    info(
+                        f"❌ Redis Error: {e}"
+                    )
 
             # =========================================
             # format
@@ -683,3 +770,4 @@ def run_check():
 
 if __name__ == "__main__":
     run_check()
+
