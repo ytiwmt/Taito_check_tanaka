@@ -1,4 +1,4 @@
-name: Taito Check
+name: Taito_tanaka Check
 
 on:
   push:
@@ -54,5 +54,6 @@ jobs:
       - name: Run script
         env:
           WEBHOOK_URL_Taito_tanaka: ${{ secrets.WEBHOOK_URL_Taito_tanaka }}
+          REDIS_URL: ${{ secrets.REDIS_URL }}
         run: |
           python check_taito_tanaka.py
