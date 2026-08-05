@@ -373,7 +373,7 @@ def format_month(data, year, month):
             is_weekend_or_holiday
             and item["status"] in ["○", "△"]
         ):
-            line = f"**🌠 {line} 🌠**"
+            line = f"**🔔 {line} 🔔**"
 
         rows.append(
             (item["day"], line)
