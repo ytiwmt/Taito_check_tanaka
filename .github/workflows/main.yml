@@ -1,0 +1,58 @@
+name: Taito Check
+
+on:
+  push:
+    paths:
+      - "**.py"
+
+  schedule:
+    - cron: '*/10 * * * *'
+
+  workflow_dispatch:
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      # -------------------------
+      # Checkout
+      # -------------------------
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # -------------------------
+      # Python
+      # -------------------------
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # -------------------------
+      # Dependencies
+      # -------------------------
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install requests
+          pip install beautifulsoup4
+          pip install playwright
+          pip install jpholiday
+
+      # -------------------------
+      # Playwright
+      # -------------------------
+      - name: Install Playwright browsers
+        run: |
+          playwright install --with-deps chromium
+
+      # -------------------------
+      # Run
+      # -------------------------
+      - name: Run script
+        env:
+          WEBHOOK_URL_Taito_Tanaka: ${{ secrets.WEBHOOK_URL_Taito_Tanaka }}
+        run: |
+          python check_taito_tanaka.py
