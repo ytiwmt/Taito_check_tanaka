@@ -15,7 +15,7 @@ VERSION = "v1.0"
 
 WEEKS = ["月", "火", "水", "木", "金", "土", "日"]
 
-DEBUG = False
+DEBUG = True
 
 
 # =========================================
@@ -211,12 +211,16 @@ def open_calendar(page):
         "input[value*='たなか']"
     )
 
+    info("===== たなか選択後 =====")
     info(page.inner_text("body")[:2000])
 
     click(
         page,
         "input[name='ucPCFooter$btnForward']"
     )
+
+    info("===== 次へ後 =====")
+    info(page.inner_text("body")[:2000])
 
     click(
         page,
