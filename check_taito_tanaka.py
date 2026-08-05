@@ -8,12 +8,12 @@ from playwright.sync_api import sync_playwright
 import jpholiday
 import redis
 
-WEBHOOK_URL = os.getenv("WEBHOOK_URL_Taito")
+WEBHOOK_URL = "https://discord.com/api/webhooks/1534362105258709146/uh9oEuUErxdt6CB0j_rODf8MycHNvh4DIh7mcoPWljPQ7uzQNnEBRwMLogSTxsi2_cLE"
 REDIS_URL = os.getenv("REDIS_URL")
 
 BASE_URL = "https://shisetsu.city.taito.lg.jp/Wg_ModeSelect.aspx"
 
-VERSION = "v11.5"
+VERSION = "v1.0"
 
 WEEKS = ["月", "火", "水", "木", "金", "土", "日"]
 
@@ -49,7 +49,7 @@ if REDIS_URL:
         r.ping()
 
         print(
-            "✅ Redis connection successful (Taito)"
+            "✅ Redis connection successful (Taito Tanaka)"
         )
 
     except Exception as e:
@@ -148,7 +148,7 @@ def parse(page, label):
 
         return None
 
-    log(f"[{label}] cell数: {len(cells)}")
+    log(f"[たなか {label}] cell数: {len(cells)}")
 
     for c in cells:
 
@@ -192,7 +192,7 @@ def parse(page, label):
         key=lambda x: x["day"]
     )
 
-    log(f"[{label}] 件数: {len(results)}")
+    log(f"[たなか {label}] 件数: {len(results)}")
 
     return results
 
@@ -244,7 +244,12 @@ def open_calendar(page):
 
     click(
         page,
-        "input[value*='柳北']"
+        "input[value='次頁']"
+    )
+
+    click(
+        page,
+        "input[value*='たなか']"
     )
 
     click(
@@ -332,7 +337,7 @@ def go_next(page):
             f"{body[:5000]}"
         )
 
-        info("❌ NEXT: お探しのページを表示できません")
+        info("❌ たなか NEXT: お探しのページを表示できません")
 
         return None
 
@@ -352,7 +357,7 @@ def go_next(page):
             f"{body[:5000]}"
         )
 
-        info("❌ NEXT parse失敗")
+        info("❌ たなか NEXT parse失敗")
 
     return result
 
@@ -595,7 +600,7 @@ def run_check():
                 try:
 
                     last_raw = r.get(
-                        "taito_ryuhoku_status"
+                        "taito_tanaka_status"
                     )
 
                     if last_raw:
@@ -611,7 +616,7 @@ def run_check():
                             is_changed = False
 
                     r.set(
-                        "taito_ryuhoku_status",
+                        "taito_tanaka_status",
                         json.dumps(current_state)
                     )
 
@@ -692,7 +697,7 @@ def run_check():
             )
 
             title = (
-                f"🏸 **柳北スポーツプラザ** "
+                f"🏸 **たなかスポーツプラザ** "
                 f"[{VERSION}]"
             )
 
@@ -759,16 +764,16 @@ def run_check():
             send(msg)
 
             info(
-                f"✅ 台東区完了 "
+                f"✅ 台東区たなか完了 "
                 f"(is_changed: {is_changed}, "
                 f"mention: {should_mention})"
             )
 
         except Exception as e:
 
-            info(f"⚠️ 台東区 ERROR: {e}")
+            info(f"⚠️ 台東区たなか ERROR: {e}")
 
-            send(f"⚠️ ERROR\n{e}")
+            send(f"⚠️ 台東区たなか ERROR\n{e}")
 
         finally:
 
