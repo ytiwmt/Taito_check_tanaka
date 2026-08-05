@@ -40,6 +40,7 @@ jobs:
           pip install beautifulsoup4
           pip install playwright
           pip install jpholiday
+          pip install redis
 
       # -------------------------
       # Playwright
