@@ -53,6 +53,6 @@ jobs:
       # -------------------------
       - name: Run script
         env:
-          WEBHOOK_URL_Taito_Tanaka: ${{ secrets.WEBHOOK_URL_Taito_tanaka }}
+          WEBHOOK_URL_Taito_tanaka: ${{ secrets.WEBHOOK_URL_Taito_tanaka }}
         run: |
           python check_taito_tanaka.py
