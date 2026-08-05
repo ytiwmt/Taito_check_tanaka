@@ -254,6 +254,9 @@ def open_calendar(page):
         "input[name='ucPCFooter$btnForward']"
     )
 
+    info("===== カレンダー後 =====")
+    info(page.inner_text("body")[:1000])
+
     page.wait_for_timeout(1500)
 
 
