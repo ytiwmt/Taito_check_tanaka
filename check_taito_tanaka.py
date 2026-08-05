@@ -7,15 +7,15 @@ from zoneinfo import ZoneInfo
 from playwright.sync_api import sync_playwright
 import jpholiday
 
-WEBHOOK_URL = "https://discord.com/api/webhooks/1534362105258709146/uh9oEuUErxdt6CB0j_rODf8MycHNvh4DIh7mcoPWljPQ7uzQNnEBRwMLogSTxsi2_cLE"
+WEBHOOK_URL = os.getenv("WEBHOOK_URL_Taito_tanaka")
 
 BASE_URL = "https://shisetsu.city.taito.lg.jp/Wg_ModeSelect.aspx"
 
-VERSION = "v1.0"
+VERSION = "v2.0"
 
 WEEKS = ["月", "火", "水", "木", "金", "土", "日"]
 
-DEBUG = True
+DEBUG = False
 
 
 # =========================================
@@ -211,16 +211,10 @@ def open_calendar(page):
         "input[value*='たなか']"
     )
 
-    info("===== たなか選択後 =====")
-    info(page.inner_text("body")[:2000])
-
     click(
         page,
         "input[name='ucPCFooter$btnForward']"
     )
-
-    info("===== 次へ後 =====")
-    info(page.inner_text("body")[:2000])
 
     click(
         page,
@@ -253,9 +247,6 @@ def open_calendar(page):
         page,
         "input[name='ucPCFooter$btnForward']"
     )
-
-    info("===== カレンダー後 =====")
-    info(page.inner_text("body")[:1000])
 
     page.wait_for_timeout(1500)
 
