@@ -89,7 +89,7 @@ def parse(page, label):
 
     try:
 
-        table = page.locator("table").nth(23)
+        table = page.locator("table").nth(24)
 
         if table.count() == 0:
 
